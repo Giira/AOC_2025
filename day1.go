@@ -1,28 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"strings"
 )
 
 func day1() {
-	f, err := os.Open("day1.txt")
-	if err != nil {
-		log.Fatalf("error: Failed to open text file: %v", err)
-	}
-	defer f.Close()
-
-	var data []string
-
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		data = append(data, scanner.Text())
-	}
-
+	data := import_file("day1.txt")
 	dial := 50
 	counter := 0
 	counter_2 := 0
@@ -44,8 +30,6 @@ func day1() {
 			log.Fatalf("error: Failed to convert distance string to integer: %v", err)
 		}
 
-		fmt.Printf("Dial at: %v, Turns %v, By %v\n", dial, string(direction), distance)
-
 		switch direction {
 		case 'R':
 			dial += distance
@@ -59,21 +43,17 @@ func day1() {
 				counter_2 += 1
 			}
 			dial += 100
-			fmt.Println("Dial passed 0")
 		} else if dial > 99 {
 			dial -= 100
 			if dial != 0 {
 				counter_2 += 1
 			}
-			fmt.Println("Dial passed 0")
 		}
 		if dial == 0 && distance != 0 {
 			counter += 1
 			counter_2 += 1
-			fmt.Println("Dial at 0")
 		}
 		counter_2 += add_turns
-		fmt.Println(counter_2)
 	}
 	fmt.Printf("Day 1, Part 1: %v\n", counter)
 	fmt.Printf("Day 1, Part 2: %v\n", counter_2)
