@@ -49,11 +49,36 @@ func part1(IDrange IDRange, result *uint64, wg *sync.WaitGroup, mu *sync.Mutex) 
 	defer wg.Done()
 }
 
-func day2() {
-	data := import_file("day2.txt")
-	instructions := strings.Split(data[0], ",")
-	ranges := make_ranges(instructions)
+func part2(IDrange IDRange, result *uint64, wg *sync.WaitGroup, mu *sync.Mutex) {
+	for current := (IDrange.start); current <= IDrange.end; current++ {
+		current_str := strconv.Itoa(current)
+		for len_current := 1; len_current <= (len(current_str) / 2); len_current++ {
+			if inv_check(current_str, len_current) {
+				mu.Lock()
+				*result += uint64(current)
+				mu.Unlock()
+				break
+			}
+		}
+	}
+	defer wg.Done()
+}
 
+func inv_check(current_str string, len_current int) bool {
+	if (len(current_str) % len_current) != 0 {
+		return false
+	}
+	segment1 := current_str[0:len_current]
+	for index := len_current; index <= (len(current_str) - len_current); index += len_current {
+		segment := current_str[index:(index + len_current)]
+		if segment1 != segment {
+			return false
+		}
+	}
+	return true
+}
+
+func part1_parent(ranges []IDRange) {
 	var result1 uint64 = 0
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -64,4 +89,26 @@ func day2() {
 	}
 	wg.Wait()
 	fmt.Printf("Day 2, Part 1: %v\n", result1)
+}
+
+func part2_parent(ranges []IDRange) {
+	var result1 uint64 = 0
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+
+	for _, IDRange := range ranges {
+		wg.Add(1)
+		go part2(IDRange, &result1, &wg, &mu)
+	}
+	wg.Wait()
+	fmt.Printf("Day 2, Part 2: %v\n", result1)
+}
+
+func day2() {
+	data := import_file("day2.txt")
+	instructions := strings.Split(data[0], ",")
+	ranges := make_ranges(instructions)
+
+	part1_parent(ranges)
+	part2_parent(ranges)
 }
