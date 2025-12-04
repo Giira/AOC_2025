@@ -52,25 +52,34 @@ func part1_3(line string, result *uint64, wg *sync.WaitGroup, mu *sync.Mutex) {
 	defer wg.Done()
 }
 
-type BigJoltage struct {
-	first    int
-	second   int
-	third    int
-	fourth   int
-	fifth    int
-	sixth    int
-	seventh  int
-	eighth   int
-	ninth    int
-	tenth    int
-	eleventh int
-	twelfth  int
-}
-
 func part2_3(line string, result *uint64, wg *sync.WaitGroup, mu *sync.Mutex) {
 	bank := make_bank(line)
 	length := len(bank)
+	bj := make([]int, 12)
+	big_index := 0
+	for i := range 12 {
+		for j := big_index; j < (length - 12 + i); j++ {
+			if bank[j] > bj[i] {
+				bj[i] = bank[j]
+				big_index = j + 1
+			}
+		}
+	}
+	bj_str := make([]string, len(bj))
+	for u, v := range bj {
+		bj_str[u] = strconv.Itoa(v)
+	}
+	big_joltage := strings.Join(bj_str, "")
+	out_int, err := strconv.Atoi(big_joltage)
+	fmt.Println(out_int)
+	if err != nil {
+		log.Fatalf("error converting big joltage to int: %v", err)
+	}
+	mu.Lock()
+	*result += uint64(out_int)
+	mu.Unlock()
 
+	defer wg.Done()
 }
 
 func part1_parent_3(data []string) {
@@ -103,4 +112,5 @@ func day3() {
 	data := import_file("day3.txt")
 
 	part1_parent_3(data)
+	part2_parent_3(data)
 }
