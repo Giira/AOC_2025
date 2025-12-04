@@ -58,7 +58,7 @@ func part2_3(line string, result *uint64, wg *sync.WaitGroup, mu *sync.Mutex) {
 	bj := make([]int, 12)
 	big_index := 0
 	for i := range 12 {
-		for j := big_index; j < (length - 12 + i); j++ {
+		for j := big_index; j < (length - 11 + i); j++ {
 			if bank[j] > bj[i] {
 				bj[i] = bank[j]
 				big_index = j + 1
@@ -71,7 +71,6 @@ func part2_3(line string, result *uint64, wg *sync.WaitGroup, mu *sync.Mutex) {
 	}
 	big_joltage := strings.Join(bj_str, "")
 	out_int, err := strconv.Atoi(big_joltage)
-	fmt.Println(out_int)
 	if err != nil {
 		log.Fatalf("error converting big joltage to int: %v", err)
 	}
