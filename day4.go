@@ -43,14 +43,37 @@ func count_paper(data [][]string, pmap map[Coord]int) {
 	}
 }
 
-func part_1_4(data [][]string, pmap map[Coord]int) {
+func paper_cleanup(data [][]string, coords []Coord) [][]string {
+	for _, coord := range coords {
+		data[coord.x][coord.y] = "."
+	}
+	return data
+}
+
+func part1_4(data [][]string, pmap map[Coord]int) (int, []Coord) {
 	total := 0
+	var paper_out []Coord
 	for coord := range pmap {
 		if pmap[coord] < 4 && data[coord.x][coord.y] == "@" {
 			total++
+			paper_out = append(paper_out, coord)
 		}
 	}
-	fmt.Printf("Day 4, Part 1: %v\n", total)
+	return total, paper_out
+}
+
+func part2_4(data [][]string, pmap map[Coord]int) int {
+	out := 0
+	for {
+		count_paper(data, pmap)
+		total, list := part1_4(data, pmap)
+		data = paper_cleanup(data, list)
+		out += total
+		if total == 0 {
+			break
+		}
+	}
+	return out
 }
 
 func day4() {
@@ -61,5 +84,8 @@ func day4() {
 	}
 	p_map := make_coord_map(data)
 	count_paper(data, p_map)
-	part_1_4(data, p_map)
+	total, _ := part1_4(data, p_map)
+	fmt.Printf("Day 4, Part 1: %v\n", total)
+	total2 := part2_4(data, p_map)
+	fmt.Printf("Day 4, Part 2: %v\n", total2)
 }
