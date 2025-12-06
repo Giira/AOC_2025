@@ -40,3 +40,8 @@ func make_coord_map(data [][]string) map[Coord]int {
 	}
 	return e_map
 }
+
+type IDRange struct {
+	start int
+	end   int
+}

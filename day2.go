@@ -8,11 +8,6 @@ import (
 	"sync"
 )
 
-type IDRange struct {
-	start int
-	end   int
-}
-
 func make_ranges(instructions []string) []IDRange {
 	ranges := []IDRange{}
 	for _, instruction := range instructions {
