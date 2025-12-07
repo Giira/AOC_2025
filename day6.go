@@ -52,7 +52,7 @@ func doMaths(digits [][]int, instructions []string) int {
 	return total
 }
 
-func day6() {
+func part1_6() {
 	data := import_file("day6.txt")
 	digits := data[:len(data)-1]
 	var dig_fields [][]string
@@ -63,4 +63,8 @@ func day6() {
 	instructions := strings.Fields(data[len(data)-1])
 	total := doMaths(prep_digits, instructions)
 	fmt.Printf("Day 6, Part 1: %v\n", total)
+}
+
+func day6() {
+	part1_6()
 }
