@@ -65,6 +65,16 @@ func part1_6() {
 	fmt.Printf("Day 6, Part 1: %v\n", total)
 }
 
+func part2_6() {
+	data := import_file("day6.txt")
+	digits_in := data[:len(data)-1]
+	instructions := data[len(data)-1]
+
+	make horizontal strings
+	fields them
+	split by string" " " " " "
+}
+
 func day6() {
 	part1_6()
 }
