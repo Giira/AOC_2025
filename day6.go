@@ -52,6 +52,26 @@ func doMaths(digits [][]int, instructions []string) int {
 	return total
 }
 
+func split_numbers(in []string) [][]int {
+	var out [][]int
+	var out_part []int
+	for _, item := range in {
+		var empty []int
+		if strings.Trim(item, " ") == "" {
+			out = append(out, out_part)
+			out_part = empty
+		} else {
+			o, err := strconv.Atoi(strings.Trim(item, " "))
+			if err != nil {
+				log.Fatalf("error converting to int: %v", err)
+			}
+			out_part = append(out_part, o)
+		}
+	}
+	out = append(out, out_part)
+	return out
+}
+
 func part1_6() {
 	data := import_file("day6.txt")
 	digits := data[:len(data)-1]
@@ -68,13 +88,24 @@ func part1_6() {
 func part2_6() {
 	data := import_file("day6.txt")
 	digits_in := data[:len(data)-1]
-	instructions := data[len(data)-1]
+	instructions := strings.Fields(data[len(data)-1])
 
-	make horizontal strings
-	fields them
-	split by string" " " " " "
+	var str_digits []string
+	for i := range len(digits_in[0]) {
+		var str_slice []string
+		for j := range len(digits_in) {
+			str_slice = append(str_slice, string(digits_in[j][i]))
+		}
+		str := strings.Join(str_slice, "")
+		str_digits = append(str_digits, str)
+	}
+	digits_out := split_numbers(str_digits)
+
+	total := doMaths(digits_out, instructions)
+	fmt.Printf("Day 6, Part 2: %v\n", total)
 }
 
 func day6() {
 	part1_6()
+	part2_6()
 }
