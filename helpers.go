@@ -41,6 +41,20 @@ func make_coord_map(data [][]string) map[Coord]int {
 	return e_map
 }
 
+func split_chars_coord_map(data []string) map[Coord]string {
+	c_map := make(map[Coord]string)
+	for i := range len(data) {
+		for j := range len(data[i]) {
+			c := Coord{
+				x: i,
+				y: j,
+			}
+			c_map[c] = string(data[i][j])
+		}
+	}
+	return c_map
+}
+
 type IDRange struct {
 	start int
 	end   int
