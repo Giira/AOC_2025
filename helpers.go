@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 )
 
 func import_file(file string) []string {
@@ -25,6 +27,12 @@ func import_file(file string) []string {
 type Coord struct {
 	x int
 	y int
+}
+
+type Coord3D struct {
+	x int
+	y int
+	z int
 }
 
 func make_coord_map(data [][]string) map[Coord]int {
@@ -55,7 +63,33 @@ func split_chars_coord_map(data []string) map[Coord]string {
 	return c_map
 }
 
+func lines_to_3d_coords(data []string) []Coord3D {
+	var out []Coord3D
+	for _, line := range data {
+		tmp := strings.Split(line, ",")
+		x, err0 := strconv.Atoi(tmp[0])
+		y, err1 := strconv.Atoi(tmp[1])
+		z, err2 := strconv.Atoi(tmp[2])
+		if err0 != nil || err1 != nil || err2 != nil {
+			log.Fatalf("error converting coordinate to int: x:%v y:%v z:%v", err0, err1, err2)
+		}
+		coord := Coord3D{
+			x: x,
+			y: y,
+			z: z,
+		}
+		out = append(out, coord)
+	}
+	return out
+}
+
 type IDRange struct {
 	start int
 	end   int
+}
+
+type Connection struct {
+	a    int
+	b    int
+	dist int
 }
