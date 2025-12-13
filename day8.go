@@ -49,11 +49,13 @@ func makeCircuits(distances []Connection, CONNECTIONS int) []set.Set {
 				if circuit.Contains(a) || circuit.Contains(b) {
 					circuit.Add(a)
 					circuit.Add(b)
+					break
 				} else {
 					s := set.NewSet()
 					s.Add(a)
 					s.Add(b)
 					circuits = append(circuits, *s)
+					break
 				}
 			}
 		}
