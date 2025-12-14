@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-const CONNECTIONS = 10
+const CONNECTIONS = 100
 
 func square(a int) int {
 	return a * a
@@ -34,30 +34,29 @@ func calcDistances(coords []Coord3D) []Connection {
 	return connections
 }
 
-func makeCircuits(distances []Connection, CONNECTIONS int) []set.Set {
-	var circuits []set.Set
-	for i := range CONNECTIONS {
+func makeCircuits(distances []Connection, CONNECTIONS int) []*set.Set {
+	var circuits []*set.Set
+	limit := CONNECTIONS
+	if limit > len(distances) {
+		limit = len(distances)
+	}
+	for i := 0; i < limit; i++ {
 		a := strconv.Itoa(distances[i].a)
 		b := strconv.Itoa(distances[i].b)
-		if len(circuits) == 0 {
+		placed := false
+		for j := range circuits {
+			if circuits[j].Contains(a) || circuits[j].Contains(b) {
+				circuits[j].Add(a)
+				circuits[j].Add(b)
+				placed = true
+				break
+			}
+		}
+		if !placed {
 			s := set.NewSet()
 			s.Add(a)
 			s.Add(b)
-			circuits = append(circuits, *s)
-		} else {
-			for _, circuit := range circuits {
-				if circuit.Contains(a) || circuit.Contains(b) {
-					circuit.Add(a)
-					circuit.Add(b)
-					break
-				} else {
-					s := set.NewSet()
-					s.Add(a)
-					s.Add(b)
-					circuits = append(circuits, *s)
-					break
-				}
-			}
+			circuits = append(circuits, s)
 		}
 	}
 	return circuits
@@ -78,6 +77,8 @@ func day8() {
 	coords := lines_to_3d_coords(data)
 	distances := calcDistances(coords)
 	circuits := makeCircuits(distances, CONNECTIONS)
-	fmt.Println(circuits)
+	for _, item := range circuits {
+		fmt.Println(item.List())
+	}
 
 }
