@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"home/euan466/adventofcode/2025/pkg/set"
 	"slices"
-	"strconv"
 )
 
-const CONNECTIONS = 100
+const CONNECTIONS = 2
 
 func square(a int) int {
 	return a * a
@@ -34,31 +33,26 @@ func calcDistances(coords []Coord3D) []Connection {
 	return connections
 }
 
-func makeCircuits(distances []Connection, CONNECTIONS int) []*set.Set {
+func makeCircuits(distances []Connection, CONNECTIONS int, length int) []*set.Set {
 	var circuits []*set.Set
 	limit := CONNECTIONS
-	if limit > len(distances) {
-		limit = len(distances)
+	for i := range length {
+		s := set.NewSet()
+		s.Add(i)
+		circuits = append(circuits, s)
 	}
-	for i := 0; i < limit; i++ {
-		a := strconv.Itoa(distances[i].a)
-		b := strconv.Itoa(distances[i].b)
-		placed := false
-		for j := range circuits {
-			if circuits[j].Contains(a) || circuits[j].Contains(b) {
-				circuits[j].Add(a)
-				circuits[j].Add(b)
-				placed = true
-				break
+
+	for j := 1; j < limit; j++ {
+		for k, circuit := range circuits {
+			if k == j {
+				continue
+			} else if circuits[j].Intersection(circuit) != nil {
+				circuits[j] = circuits[j].Union(circuit)
+				circuits = slices.Delete(circuits, k, k+1)
 			}
 		}
-		if !placed {
-			s := set.NewSet()
-			s.Add(a)
-			s.Add(b)
-			circuits = append(circuits, s)
-		}
 	}
+
 	return circuits
 }
 
@@ -76,7 +70,7 @@ func day8() {
 	data := import_file("day8.txt")
 	coords := lines_to_3d_coords(data)
 	distances := calcDistances(coords)
-	circuits := makeCircuits(distances, CONNECTIONS)
+	circuits := makeCircuits(distances, CONNECTIONS, len(coords))
 	for _, item := range circuits {
 		fmt.Println(item.List())
 	}
