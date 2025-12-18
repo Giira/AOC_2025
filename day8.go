@@ -6,7 +6,7 @@ import (
 	"slices"
 )
 
-const CONNECTIONS = 2
+const CONNECTIONS = 1
 
 func square(a int) int {
 	return a * a
@@ -42,16 +42,25 @@ func makeCircuits(distances []Connection, CONNECTIONS int, length int) []*set.Se
 		circuits = append(circuits, s)
 	}
 
-	for j := 1; j < limit; j++ {
+	count := 0
+	for _, distance := range distances {
+		if count == limit {
+			break
+		}
+		var a int
+		var b int
 		for k, circuit := range circuits {
-			if k == j {
-				continue
-			} else if circuits[j].Intersection(circuit) != nil {
-				circuits[j] = circuits[j].Union(circuit)
-				circuits = slices.Delete(circuits, k, k+1)
+			if circuit.Contains(distance.a) {
+				a = k
+			}
+			if circuit.Contains(distance.b) {
+				b = k
 			}
 		}
+		circuits[a].Union(circuits[b])
+		circuits = slices.Delete(circuits, b, b+1)
 	}
+	count++
 
 	return circuits
 }
