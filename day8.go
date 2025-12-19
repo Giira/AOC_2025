@@ -6,7 +6,7 @@ import (
 	"slices"
 )
 
-const CONNECTIONS = 1
+const CONNECTIONS = 10
 
 func square(a int) int {
 	return a * a
@@ -44,7 +44,7 @@ func makeCircuits(distances []Connection, CONNECTIONS int, length int) []*set.Se
 
 	count := 0
 	for _, distance := range distances {
-		if count == limit {
+		if count == limit-1 {
 			break
 		}
 		var a int
@@ -57,18 +57,40 @@ func makeCircuits(distances []Connection, CONNECTIONS int, length int) []*set.Se
 				b = k
 			}
 		}
-		circuits[a].Union(circuits[b])
+		if a == b {
+			continue
+		}
+		circuits[a] = circuits[a].Union(circuits[b])
 		circuits = slices.Delete(circuits, b, b+1)
+		count++
 	}
-	count++
 
 	return circuits
+}
+
+func part1_8(circuits []*set.Set) int {
+	circuits = slices.SortedFunc(circuits, sortSetsSize)
+	out := 1
+	for _, circuit := range circuits[:3] {
+		out *= circuit.Size()
+	}
+	return out
 }
 
 func sortDistances(a Connection, b Connection) int {
 	if a.dist < b.dist {
 		return -1
 	} else if a.dist > b.dist {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func sortSetsSize(a *set.Set, b *set.Set) int {
+	if a.Size() < b.Size() {
+		return -1
+	} else if a.Size() > b.Size() {
 		return 1
 	} else {
 		return 0
@@ -83,5 +105,6 @@ func day8() {
 	for _, item := range circuits {
 		fmt.Println(item.List())
 	}
-
+	p1 := part1_8(circuits)
+	fmt.Printf("Day 8, Part 1: %v", p1)
 }
