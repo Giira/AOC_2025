@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"home/euan466/adventofcode/2025/pkg/set"
 	"slices"
+	"sort"
 )
 
-const CONNECTIONS = 10
+const CONNECTIONS = 1000
 
 func square(a int) int {
 	return a * a
@@ -69,10 +70,12 @@ func makeCircuits(distances []Connection, CONNECTIONS int, length int) []*set.Se
 }
 
 func part1_8(circuits []*set.Set) int {
-	circuits = slices.SortedFunc(circuits, sortSetsSize)
+	sizes := getSizes(circuits)
+	sort.Slice(sizes, func(i, j int) bool { return sizes[i] > sizes[j] })
 	out := 1
-	for _, circuit := range circuits[:3] {
-		out *= circuit.Size()
+	fmt.Print(sizes)
+	for _, size := range sizes[:3] {
+		out *= size
 	}
 	return out
 }
@@ -87,14 +90,12 @@ func sortDistances(a Connection, b Connection) int {
 	}
 }
 
-func sortSetsSize(a *set.Set, b *set.Set) int {
-	if a.Size() < b.Size() {
-		return -1
-	} else if a.Size() > b.Size() {
-		return 1
-	} else {
-		return 0
+func getSizes(sets []*set.Set) []int {
+	var sizes []int
+	for _, set := range sets {
+		sizes = append(sizes, set.Size())
 	}
+	return sizes
 }
 
 func day8() {
@@ -102,9 +103,6 @@ func day8() {
 	coords := lines_to_3d_coords(data)
 	distances := calcDistances(coords)
 	circuits := makeCircuits(distances, CONNECTIONS, len(coords))
-	for _, item := range circuits {
-		fmt.Println(item.List())
-	}
 	p1 := part1_8(circuits)
-	fmt.Printf("Day 8, Part 1: %v", p1)
+	fmt.Printf("Day 8, Part 1: %v\n", p1)
 }
