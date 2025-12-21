@@ -59,6 +59,7 @@ func makeCircuits(distances []Connection, CONNECTIONS int, length int) []*set.Se
 			}
 		}
 		if a == b {
+			count++
 			continue
 		}
 		circuits[a] = circuits[a].Union(circuits[b])
@@ -73,7 +74,6 @@ func part1_8(circuits []*set.Set) int {
 	sizes := getSizes(circuits)
 	sort.Slice(sizes, func(i, j int) bool { return sizes[i] > sizes[j] })
 	out := 1
-	fmt.Print(sizes)
 	for _, size := range sizes[:3] {
 		out *= size
 	}
