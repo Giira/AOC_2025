@@ -70,7 +70,7 @@ func makeCircuits(distances []Connection, CONNECTIONS int, length int) []*set.Se
 	return circuits
 }
 
-func makeCircuitsForever(distances []Connection, CONNECTIONS int, length int) Connection {
+func makeCircuitsForever(distances []Connection, length int) Connection {
 	var circuits []*set.Set
 	for i := range length {
 		s := set.NewSet()
@@ -145,6 +145,6 @@ func day8() {
 	circuits := makeCircuits(distances, CONNECTIONS, len(coords))
 	p1 := part1_8(circuits)
 	fmt.Printf("Day 8, Part 1: %v\n", p1)
-	d := makeCircuitsForever(distances, CONNECTIONS, len(coords))
+	d := makeCircuitsForever(distances, len(coords))
 	part2_8(d, coords)
 }
