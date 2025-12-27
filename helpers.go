@@ -83,6 +83,24 @@ func lines_to_3d_coords(data []string) []Coord3D {
 	return out
 }
 
+func lines_to_coords(data []string) []Coord {
+	var out []Coord
+	for _, line := range data {
+		tmp := strings.Split(line, ",")
+		x, err0 := strconv.Atoi(tmp[0])
+		y, err1 := strconv.Atoi(tmp[1])
+		if err0 != nil || err1 != nil {
+			log.Fatalf("error converting coordinate to int: x:%v, y:%v", err0, err1)
+		}
+		coord := Coord{
+			x: x,
+			y: y,
+		}
+		out = append(out, coord)
+	}
+	return out
+}
+
 type IDRange struct {
 	start int
 	end   int
