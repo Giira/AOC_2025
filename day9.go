@@ -11,11 +11,6 @@ type Rectangle struct {
 	area    int
 }
 
-type Outline struct {
-	current Coord
-	next    Coord
-}
-
 func makeRectangle(coord1 Coord, coord2 Coord) int {
 	x := coord1.x - coord2.x
 	x = max(x, -x)
@@ -36,15 +31,11 @@ func sortRectangles(rec1 Rectangle, rec2 Rectangle) int {
 	}
 }
 
-func biggestRectangle(coords []Coord) ([]Rectangle, Coord, Coord) {
+func biggestRectangle(coords []Coord) ([]Rectangle, Coord) {
 	var rectangles []Rectangle
-	var minX int
 	var maxX int
-	var minY int
 	var maxY int
 	for i := 0; i < len(coords); i++ {
-		minX = min(minX, coords[i].x)
-		minY = min(minY, coords[i].y)
 		maxX = max(maxX, coords[i].x)
 		maxY = max(maxY, coords[i].y)
 		for j := i + 1; j < len(coords); j++ {
@@ -58,7 +49,7 @@ func biggestRectangle(coords []Coord) ([]Rectangle, Coord, Coord) {
 		}
 	}
 	slices.SortFunc(rectangles, sortRectangles)
-	return rectangles, Coord{x: minX, y: minY}, Coord{x: maxX, y: maxY}
+	return rectangles, Coord{x: maxX, y: maxY}
 }
 
 type strCoord struct {
@@ -79,11 +70,18 @@ func makeGrid(min Coord, max Coord) [][]strCoord {
 	return out
 }
 
+func makeShape(grid [][]strCoord, coords []Coord) {
+	coords = append(coords, coords[0])
+	for i := 0; i < (len(coords) - 1); i++ {
+
+	}
+}
+
 func day9() {
 	data := import_file("day9.txt")
 	coords := lines_to_coords(data)
-	rectangles, mins, maxs := biggestRectangle(coords)
-	grid := makeGrid(mins, maxs)
+	rectangles, maxs := biggestRectangle(coords)
+	grid := makeGrid(Coord{x: 0, y: 0}, maxs)
 	fmt.Printf("Day 9, Part 1: %v\n", rectangles[0].area)
 	fmt.Println(grid)
 }
