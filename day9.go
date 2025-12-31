@@ -70,11 +70,28 @@ func makeGrid(min Coord, max Coord) [][]strCoord {
 	return out
 }
 
-func makeShape(grid [][]strCoord, coords []Coord) {
+func makeShape(grid [][]strCoord, coords []Coord) [][]strCoord {
 	coords = append(coords, coords[0])
 	for i := 0; i < (len(coords) - 1); i++ {
-
+		if coords[i].x == coords[i+1].x {
+			for j := min(coords[i].y, coords[i+1].y); j <= max(coords[i].y, coords[i+1].y); j++ {
+				grid[coords[i].x][j] = strCoord{
+					x:   coords[i].x,
+					y:   j,
+					str: "#",
+				}
+			}
+		} else if coords[i].y == coords[i+1].y {
+			for j := min(coords[i].x, coords[i+1].x); j <= max(coords[i].x, coords[i+1].x); j++ {
+				grid[j][coords[i].y] = strCoord{
+					x:   j,
+					y:   coords[i].y,
+					str: "#",
+				}
+			}
+		}
 	}
+	return grid
 }
 
 func day9() {
@@ -83,5 +100,6 @@ func day9() {
 	rectangles, maxs := biggestRectangle(coords)
 	grid := makeGrid(Coord{x: 0, y: 0}, maxs)
 	fmt.Printf("Day 9, Part 1: %v\n", rectangles[0].area)
+	grid = makeShape(grid, coords)
 	fmt.Println(grid)
 }
